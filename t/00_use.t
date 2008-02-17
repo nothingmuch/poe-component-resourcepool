@@ -11,4 +11,5 @@ use ok 'POE::Component::ResourcePool';
 
 use ok 'POE::Component::ResourcePool::Resource::Semaphore';
 use ok 'POE::Component::ResourcePool::Resource::Collection';
+use ok 'POE::Component::ResourcePool::Resource::TryList';
 
