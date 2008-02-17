@@ -7,7 +7,6 @@ use POE;
 
 has session_id => (
 	is  => "ro",
-	init_arg => 0,
 	default => sub { $poe_kernel->get_active_session->ID },
 );
 
