@@ -15,18 +15,28 @@ my $second = POE::Component::ResourcePool::Resource::Collection->new( values => 
 
 my $both = POE::Component::ResourcePool::Resource::TryList->new( resources => [ $first, $second ] );
 
-my @got = $both->try_allocating( undef, undef, 2 );
+ok( $both->could_allocate( undef, undef, 2 ), "could allocate" );
 
-is_deeply( \@got, [ $first, 1, 2 ], "try" );
+my @one = $both->try_allocating( undef, undef, 2 );
 
-is_deeply( [ $both->finalize_allocation( undef, undef, @got ) ], [ [ 1, 2 ] ], "finalize" );
+is_deeply( \@one, [ $first, 1, 2 ], "try" );
 
-@got = $both->try_allocating( undef, undef, 2 );
+is_deeply( [ $both->finalize_allocation( undef, undef, @one ) ], [ [ 1, 2 ] ], "finalize" );
 
-is_deeply( \@got, [ $second, qw(foo bar) ], "try" );
+my @two = $both->try_allocating( undef, undef, 2 );
 
-is_deeply( [ $both->finalize_allocation( undef, undef, @got ) ], [ [ qw(foo bar) ] ], "finalize" );
+is_deeply( \@two, [ $second, qw(foo bar) ], "try" );
 
-@got = $both->try_allocating( undef, undef, 1 );
+is_deeply( [ $both->finalize_allocation( undef, undef, @two ) ], [ [ qw(foo bar) ] ], "finalize" );
 
-is_deeply( \@got, [ $first, 3 ], "try" );
+is_deeply( [ $both->try_allocating( undef, undef, 1 ) ], [ $first, 3 ], "try" );
+
+is_deeply( [ $both->try_allocating( undef, undef, 2 ) ], [ ], "failed" );
+
+$both->free_allocation( undef, undef, @two );
+
+is_deeply( [ $both->try_allocating( undef, undef, 2 ) ], [ $second, qw(gorch foo) ], "freed" );
+
+$both->free_allocation( undef, undef, @one );
+
+is_deeply( [ $both->try_allocating( undef, undef, 2 ) ], [ $first, 3, 1 ], "freed" );
