@@ -139,6 +139,10 @@ for my $refc_alloc ( 0, 1 ) {
 		},
 	);
 
+	is_deeply( [ sort $pool->pending_requests ], [ sort $two, $four ], "pending requests" );
+	is_deeply( [ sort $pool->all_requests ], [ sort $two, $four ], "all_requests" );
+	is_deeply( [ sort $pool->allocated_requests ], [ ], "allocated_requests" );
+
 	$poe_kernel->run;
 
 	is( $got_four, undef, "didn't get 4" );

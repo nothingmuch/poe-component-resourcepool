@@ -138,7 +138,39 @@ sub resource_updated {
 sub pending_requests {
 	my ( $self, $resource ) = @_;
 
-	return keys %{ $self->_resources_by_request };
+	if ( $resource ) {
+		$resource = $self->resources->{$resource} unless ref $resource;
+		return $self->_requests_for_resource($resource)->members;
+	} else {
+		return keys %{ $self->_resources_by_request };
+	}
+}
+
+sub allocated_requests {
+	my ( $self, $resource ) = @_;
+
+	if ( $resource ) {
+		my $resources = $self->resources;
+
+		my $resource_name = ref $resource
+			? (grep { $resources->{$_} == $resource } keys %$resources )[0]
+			: $resource;
+
+		my $allocations = $self->_allocations;
+
+		return grep { exists $allocations->{$_}{$resource_name} } keys %$allocations;
+	} else {
+		return keys %{ $self->_allocations };
+	}
+}
+
+sub all_requests {
+	my ( $self, @args ) = @_;
+
+	return (
+		$self->pending_requests(@args),
+		$self->allocated_requests(@args),
+	)
 }
 
 sub shutdown {
@@ -575,6 +607,27 @@ Called by resources to signal that a resource has been updated.
 
 C<@requests> can be specified in order to only recheck certain requests
 (instead of all the requests associated with the resource).
+
+=item pending_requests
+
+Returns a list of the currently pending requests.
+
+If a resource is specified as the first argument then only returns the requests
+for that resource.
+
+=item allocated_requests
+
+Returns a list of the currently allocated requests.
+
+If a resource is specified as the first argument then only returns the requests
+for that resource.
+
+=item all_requests
+
+Returns all the requests active in the pool (pending and allocated).
+
+If a resource is specified as the first argument then only returns the requests
+for that resource.
 
 =back
 
