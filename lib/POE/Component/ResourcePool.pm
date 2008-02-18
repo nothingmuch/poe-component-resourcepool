@@ -20,7 +20,7 @@ use POE::Component::ResourcePool::Request;
 sub spawn { shift->new(@_) }
 
 has alias => (
-	isa => "Str|Undef",
+	isa => "Str",
 	is  => "ro",
 	lazy    => 1,
 	default => sub { overload::StrVal(shift) },
