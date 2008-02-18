@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 29;
+use Test::More tests => 37;
 
 use ok 'POE::Component::ResourcePool::Resource::Semaphore';
 use ok 'POE::Component::ResourcePool::Resource::Collection';
@@ -173,8 +173,22 @@ for my $refc_alloc ( 0, 1 ) {
 					$pool->request( params => { two => 5 }, event => "got" ),
 				);
 
-				eval { $pool->request( params => { three => 3 }, event => "got" ) };
+				eval { $pool->request( params => { two => 1 } ) };
 				my $e = $@;
+				ok( $@, "got an error" );
+				like( $@, qr/event/, "the right error" );
+				like( $@, qr/callback/, "the right error" );
+				like( $@, qr/basic\.t/, "it's a croak, not a die" );
+
+				eval { $pool->request( params => { doesnt_exist => 3 }, event => "got" ) };
+				$e = $@;
+				ok( $@, "got an error" );
+				like( $@, qr/no resource/, "the right error" );
+				like( $@, qr/doesnt_exist/, "the right resource in the error" );
+				like( $@, qr/basic\.t/, "it's a croak, not a die" );
+
+				eval { $pool->request( params => { three => 3 }, event => "got" ) };
+				$e = $@;
 				ok( $@, "got an error" );
 				like( $@, qr/rejected/, "the right error" );
 				like( $@, qr/three/, "the right resource in the error" );
