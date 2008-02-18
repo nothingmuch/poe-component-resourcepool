@@ -3,6 +3,8 @@
 package POE::Component::ResourcePool;
 use MooseX::POE;
 
+use Carp::Clan qw(^POE::Component::ResourcePool);
+
 use Tie::RefHash;
 use Tie::RefHash::Weak;
 
@@ -342,7 +344,7 @@ sub _validate_request_params {
 	my $resources = $self->resources;
 
 	if ( my @missing = grep { not exists $resources->{$_} } keys %$params ) {
-		die "request $request has parameters for which no resource can be found: " . join ", ", @missing;
+		croak "request $request has parameters for which no resource can be found: " . join ", ", @missing;
 	}
 
 	my @failed;
@@ -355,7 +357,7 @@ sub _validate_request_params {
 	}
 
 	if ( @failed ) {
-		die "The following resources rejected $request: " . join  ", ", @failed;
+		croak "The following resources rejected $request: " . join  ", ", @failed;
 	}
 }
 
