@@ -103,7 +103,7 @@ for my $refc_alloc ( 0, 1 ) {
 		},
 	);
 
-	my ( $two, $four, $got_two, $got_four ) = @_;
+	my ( $two, $four, $got_two, $got_four );
 
 	POE::Session->create(
 		inline_states => {
