@@ -14,9 +14,9 @@ use Scalar::Util qw(weaken);
 use POE;
 
 for my $refc_alloc ( 0, 1 ) {
-	my $max = 20;
+	my $max = 5;
 	my $delay = 0.0001;
-	my $total = 200;
+	my $total = 80;
 	my $running = 0;
 	my $max_running = 0;
 	my $dispatched = 0;
