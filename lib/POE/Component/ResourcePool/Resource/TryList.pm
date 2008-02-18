@@ -3,7 +3,7 @@
 package POE::Component::ResourcePool::Resource::TryList;
 use Moose;
 
-with 'POE::Component::ResourcePool::Resource' => { exclude => [qw(register_request forget_request)] };
+with 'POE::Component::ResourcePool::Resource';
 
 has resources => (
 	isa => "ArrayRef[POE::Component::ResourcePool::Resource]",
