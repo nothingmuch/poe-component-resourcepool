@@ -63,7 +63,9 @@ sub BUILD {
 sub DEMOLISH {
 	my $self = shift;
 
-	foreach my $resource ( values %{ $self->resources || {} } ) {
+	# the extra checks are because in global destruction these values are
+	# sometimes already gone
+	foreach my $resource ( grep { defined }values %{ $self->resources || return } ) {
 		$resource->unregister_pool($self);
 	}
 }
