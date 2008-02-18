@@ -3,7 +3,7 @@
 package POE::Component::ResourcePool;
 use MooseX::POE;
 
-use Carp::Clan qw(^POE::Component::ResourcePool);
+use Carp::Clan qr/^(?:POE::Component::ResourcePool|Moose|Class::MOP)/;
 
 use Tie::RefHash;
 use Tie::RefHash::Weak;

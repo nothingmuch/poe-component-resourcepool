@@ -3,7 +3,7 @@
 package POE::Component::ResourcePool::Request;
 use Moose;
 
-use Carp::Clan qw(^POE::Component::ResourcePool);
+use Carp::Clan qr/^(?:POE::Component::ResourcePool|Moose|Class::MOP)/;
 
 use POE;
 
