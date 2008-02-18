@@ -293,12 +293,6 @@ sub _blocked_resources_for_request {
 	$self->_resources_by_request->{$request}{blocked};
 }
 
-sub _ready_resources_for_request {
-	my ( $self, $request ) = @_;
-
-	$self->_resources_by_request->{$request}{ready};
-}
-
 sub _all_resources_for_request {
 	my ( $self, $request ) = @_;
 
