@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan';
+use Test::More tests => 29;
 
 use ok 'POE::Component::ResourcePool::Resource::Semaphore';
 use ok 'POE::Component::ResourcePool::Resource::Collection';
@@ -151,3 +151,60 @@ for my $refc_alloc ( 0, 1 ) {
 	ok( $four->canceled, "resource is canceled" );
 }
 
+{
+	my $pool = POE::Component::ResourcePool->spawn(
+		alias     => undef,
+		resources => {
+			one => my $one = POE::Component::ResourcePool::Resource::Collection->new(
+				values => [qw(1 2 3)],
+			),
+			two => my $two = POE::Component::ResourcePool::Resource::Collection->new(
+				values => [qw(foo bar gorch)],
+			),
+			three => POE::Component::ResourcePool::Resource::Semaphore->new( initial_value => 2 ),
+		},
+	);
+
+	POE::Session->create(
+		inline_states => {
+			_start => sub {
+				my @requests = (
+					$pool->request( params => { one => 1 }, event => "got" ),
+					$pool->request( params => { two => 5 }, event => "got" ),
+				);
+
+				eval { $pool->request( params => { three => 3 }, event => "got" ) };
+				my $e = $@;
+				ok( $@, "got an error" );
+				like( $@, qr/rejected/, "the right error" );
+				like( $@, qr/three/, "the right resource in the error" );
+				like( $@, qr/basic\.t/, "it's a croak, not a die" );
+
+				is_deeply( [ sort $pool->pending_requests ], [ sort @requests ], "pending requests" );
+
+				is_deeply( [ $pool->pending_requests($one) ], [ $requests[0] ], "pending requests for resource" );
+
+				is_deeply( [ $pool->allocated_requests ], [ ], "allocated requests" );
+
+				$_[HEAP]{requests} = \@requests;
+			},
+			got => sub {
+				my @requests = @{ $_[HEAP]{requests} };
+
+				is_deeply( [ $pool->pending_requests ], [ $requests[1] ], "pending requests" );
+				is_deeply( [ $pool->pending_requests($one) ], [ ], "pending requests for resource" );
+				is_deeply( [ $pool->pending_requests($two) ], [ $requests[1] ], "pending requests for resource" );
+
+				is_deeply( [ $pool->allocated_requests ], [ $requests[0] ], "allocated requests" );
+				is_deeply( [ $pool->allocated_requests($one) ], [ $requests[0] ], "allocated requests" );
+				is_deeply( [ $pool->allocated_requests($two) ], [ ], "allocated requests" );
+
+				$requests[1]->dismiss;
+
+				$pool->shutdown;
+			}
+		},
+	);
+
+	$poe_kernel->run;
+}
