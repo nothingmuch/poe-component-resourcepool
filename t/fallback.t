@@ -9,6 +9,10 @@ use ok 'POE::Component::ResourcePool::Resource::TryList';
 
 use POE::Component::ResourcePool::Resource::Collection;
 
+use POE::Component::ResourcePool;
+
+use POE;
+
 my $first  = POE::Component::ResourcePool::Resource::Collection->new( values => [ 1 .. 3 ] );
 
 my $second = POE::Component::ResourcePool::Resource::Collection->new( values => [ qw(foo bar gorch) ] );
@@ -40,3 +44,19 @@ is_deeply( [ $both->try_allocating( undef, undef, 2 ) ], [ $second, qw(gorch foo
 $both->free_allocation( undef, undef, @one );
 
 is_deeply( [ $both->try_allocating( undef, undef, 2 ) ], [ $first, 3, 1 ], "freed" );
+
+is_deeply( [ $both->registered_pools ],  [ ], "registered pools" );
+is_deeply( [ $first->registered_pools ], [ ], "registered pools of sub resource" );
+
+{
+	my $pool = POE::Component::ResourcePool->new( resources => { moose => $both } );
+
+	is_deeply( [ $both->registered_pools ], [ $pool ], "registered pools" );
+	is_deeply( [ $first->registered_pools ], [ $pool ], "registered pools of sub resource" );
+
+	$poe_kernel->run; # let it run so the session exits and the pool gets garbage collected
+}
+
+is_deeply( [ $both->registered_pools ],  [ ], "registered pools" );
+is_deeply( [ $first->registered_pools ], [ ], "registered pools of sub resource" );
+
