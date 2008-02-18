@@ -388,14 +388,6 @@ sub _free_allocations {
 	}
 }
 
-sub _free_all {
-	my $self = shift;
-
-	foreach my $request ( keys %{ $self->_allocations } ) { 
-		$self->_free_allocations( $request );
-	}
-}
-
 sub _try_allocating {
 	my ( $self, $request ) = @_;
 
