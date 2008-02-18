@@ -13,8 +13,8 @@ WriteMakefile(
 	PREREQ_PM    => {
 		'Test::use::ok' => 0,
 		'POE' => 0,
-		'Moose' => '0.37', # undef init_arg
-		'MooseX::POE' => '0.070', # session leaks
+		'Moose' => '0.37', # undef init_arg, initializer
+		'MooseX::POE' => '0.080', # session leaks, aliased role
 		'Set::Object' => '1.20', # weak sets
 		'Tie::RefHash' => 0,
 		'Tie::RefHash::Weak' => '0.08',
