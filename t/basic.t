@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 37;
+use Test::More tests => 38;
 
 use ok 'POE::Component::ResourcePool::Resource::Semaphore';
 use ok 'POE::Component::ResourcePool::Resource::Collection';
@@ -148,6 +148,7 @@ for my $refc_alloc ( 0, 1 ) {
 	is( $got_four, undef, "didn't get 4" );
 	is_deeply( $got_two, { thingys => [ qw(1 2) ] }, "got 2" );
 	ok( $two->fulfilled, "resource is fulfilled" );
+	ok( !$two->canceled, "resource is not canceled" );
 	ok( $four->canceled, "resource is canceled" );
 }
 
