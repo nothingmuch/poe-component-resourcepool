@@ -17,14 +17,9 @@ our $VERSION = "0.01";
 
 use POE::Component::ResourcePool::Request;
 
-sub spawn { shift->new(@_) }
+with qw(MooseX::POE::Aliased);
 
-has alias => (
-	isa => "Str",
-	is  => "ro",
-	lazy    => 1,
-	default => sub { overload::StrVal(shift) },
-);
+sub spawn { shift->new(@_) }
 
 has resources => (
 	isa => "HashRef[POE::Component::ResourcePool::Resource]",
@@ -173,22 +168,7 @@ sub all_requests {
 	)
 }
 
-sub shutdown {
-	my $self = shift;
-	$poe_kernel->call( $self->get_session_id, "_shutdown" );
-}
-
-event _shutdown => sub {
-	my ( $self, $kernel ) = @_[OBJECT, KERNEL];
-
-	$kernel->alias_remove( $_ ) for $kernel->alias_list();
-};
-
-sub START {
-	my $self = shift;
-
-	$poe_kernel->alias_set($self->alias);
-}
+sub shutdown { shift->clear_alias }
 
 # keyed by request
 has _allocations => (
@@ -621,9 +601,7 @@ method API.
 
 =item alias
 
-An alias for the poe session.
-
-Defaults to the C<overload::StrVal> of the pool.
+Comes from L<MooseX::POE::Aliased>.
 
 Note that the alias is not currently useful for anything, since the only events
 the resource pool currently responds to are internal.

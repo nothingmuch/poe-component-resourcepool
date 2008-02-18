@@ -154,7 +154,6 @@ for my $refc_alloc ( 0, 1 ) {
 
 {
 	my $pool = POE::Component::ResourcePool->spawn(
-		alias     => undef,
 		resources => {
 			one => my $one = POE::Component::ResourcePool::Resource::Collection->new(
 				values => [qw(1 2 3)],
