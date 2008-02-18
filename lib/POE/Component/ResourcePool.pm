@@ -322,8 +322,7 @@ sub _block_resource {
 	foreach my $request ( @requests ) {
 		my ( $ready, $blocked ) = $self->_resource_sets_for_request($request);
 
-		$ready->remove($resource);
-		$blocked->insert($resource);
+		$ready->remove($resource) and $blocked->insert($resource);
 	}
 }
 
