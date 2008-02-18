@@ -150,6 +150,11 @@ cancel it.
 
 Create a new request
 
+=item dismiss
+
+If the request has already been fulfilled then deallocate it, otherwise cancel
+it.
+
 =item dismissed
 
 Returns a boolean value denoting whether or not the request has been dismissed.
@@ -160,7 +165,8 @@ Returns a boolean value denoting whether or not the request has been fulfilled.
 
 =item canceled
 
-Returns a boolean value denoting whether or not the request has been canceled (dismissed but not fulfilled).
+Returns a boolean value denoting whether or not the request has been canceled
+(dismissed but not fulfilled).
 
 =back
 
@@ -172,6 +178,8 @@ Returns a boolean value denoting whether or not the request has been canceled (d
 
 The callback to call when the request is fulfilled.
 
+See also the C<event> attribute.
+
 =item event
 
 An event name to C<post> to on the currently active session at the time of the
@@ -182,6 +190,9 @@ resource's creation. Used to generate a default C<callback>.
 THe ID of the currently active session at the time of the resource's creation.
 Used to generate a default C<callback> and to increment the reference count of
 sessions waiting on resources.
+
+If the current session is not the session that the request should be associated
+with then this parameter may be specified, but in general that is discouraged.
 
 =back
 

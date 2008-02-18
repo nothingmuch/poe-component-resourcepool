@@ -136,7 +136,12 @@ This method should return a non empty list (typically the $value) if $value can
 be presently allocated.
 
 The list will only ever be used to pass back into C<finalize_allocation> and
-C<free_allocation>, and nothing else.
+C<free_allocation>, and nothing else, so it is considered effectively private
+to the resource.
+
+For an example of why allocation data structures are private see
+L<POE::Component::ResourcePool::Resource::TryList> (it needs to keep track of
+which resource the allocation was delegated too, for instance).
 
 =item finalize_allocation $request, @allocation
 
@@ -185,10 +190,12 @@ The default implementation uses a wek L<Set::Object> internally.
 It is reccomended you do not override this implementation, because in the
 future the API may be extended to allow prioritization of pools.
 
+=item register_request $pool, $request
+
 =item forget_request $pool, $request
 
-This is an advisory method that tells the resource a request that has been
-previously tried is no longer relevant.
+These are advisory methods that inform the resource when a request starts and
+stops becoming relevant to it.
 
 In order to optimize resource update notifications, especially when updates are
 continual, a resource may choose to keep track of previously attempted values
@@ -199,6 +206,9 @@ pool will notify all involved resources that they can remove it from their data
 structures.
 
 The base implementation is a noop, as no tracking is provided by default.
+
+See the L<POE::Component::ResourcePool::Resource::TokenBucket> resource for an
+example of how to use this (it notifies based on delays).
 
 =back
 

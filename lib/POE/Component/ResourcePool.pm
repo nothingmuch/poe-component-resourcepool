@@ -199,7 +199,7 @@ sub START {
 	}
 }
 
-
+# keyed by request
 has _allocations => (
 	isa => "HashRef[HashRef[ArrayRef]]",
 	is  => "ro",
@@ -581,9 +581,14 @@ See L<POE::Component::ResourcePool::Request>.
 
 =item create_request %args
 
-Used by C<request> to create a request object from arguments.
+Used by C<request> to create a request object with some default arguments in
+addition to the supplied ones.
 
-Uses C<request_class> to actually call C<new>.
+Delegates to C<construct_request>.
+
+=item construct_request @args
+
+Calls C<new> on the class returned by C<request_class> with the provided arguments.
 
 =item queue $request
 
@@ -640,6 +645,9 @@ for that resource.
 The hash of resources to manage.
 
 Resources may be shared by several pools.
+
+Modifying this hash is not supported yet but might be in the future using a
+method API.
 
 =item alias
 
@@ -708,6 +716,9 @@ This should be fairly easy.
 
 Try to find a way for L<POE> to keep the pool alive as long as other sessions
 may use it, just like when it's got an alias, but without needing to set one.
+
+This is very annoying for resources that need their own sessions, as it rarely
+akes sense for them to also have aliases.
 
 =head1 VERSION CONTROL
 
