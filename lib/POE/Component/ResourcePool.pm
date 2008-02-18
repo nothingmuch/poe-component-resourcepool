@@ -128,9 +128,11 @@ sub queue {
 }
 
 sub resource_updated {
-	my ( $self, $resource, %args ) = @_;
+	my ( $self, $resource, @requests ) = @_;
 
-	my @requests = @{ $args{requests} || [ ( $self->_requests_by_resource->{$resource} || return )->members ] };
+	unless ( @requests ) {
+		@requests = $self->_requests_by_resource->{$resource}->members;
+	}
 
 	my @ready = $self->_unblock_resource( $resource, @requests );
 
