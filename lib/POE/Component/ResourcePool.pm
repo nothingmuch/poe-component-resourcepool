@@ -513,9 +513,9 @@ the resource is fulfilled.
 This is because typically a session is not doing anything, and as such has no
 resources/events associated with it while it waits for a resource.
 
-Once the resource is alllocated the session will probably have at least one
-more event (depending on the callback), and will continue working until it's
-done, at which point the kernel will garbage collect it.
+Once the resource is allocated the session will probably have at least one more
+event (depending on the callback), and will continue working until it's done,
+at which point the kernel will garbage collect it.
 
 This default behavior allows you to simply keep your requests on the heap so
 that when the session closes automatically fulfilled requests will be freed.
@@ -638,7 +638,7 @@ Normally strong references are made to requests in the queue, to prevent their
 destruction.
 
 When requests leave the queue all references to them maintained by the pool are
-weak, so that if the request gets garbage collected it's allocations may be
+weak, so that if the request gets garbage collected its allocations may be
 returned to the resources.
 
 If this parameter is set then unfulfilled requests will also be weak, so that
