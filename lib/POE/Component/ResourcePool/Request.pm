@@ -31,7 +31,11 @@ sub BUILD {
 sub _build_callback {
 	my $self = shift;
 
-	defined( my $event = $self->event ) or croak "Either 'event' or 'callback' is a required parameter";
+	my $event = $self->event;
+
+	unless ( defined $event ) {
+		croak "Either 'event' or 'callback' is a required parameter";
+	}
 
 	my $session_id = $self->session_id;
 
