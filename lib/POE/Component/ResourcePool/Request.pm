@@ -3,6 +3,8 @@
 package POE::Component::ResourcePool::Request;
 use Moose;
 
+use Carp::Clan qw(^POE::Component::ResourcePool);
+
 use POE;
 
 has session_id => (
@@ -29,7 +31,7 @@ sub BUILD {
 sub _build_callback {
 	my $self = shift;
 
-	defined( my $event = $self->event ) or die "Either 'event' or 'callback' is a required parameter";
+	defined( my $event = $self->event ) or croak "Either 'event' or 'callback' is a required parameter";
 
 	my $session_id = $self->session_id;
 
