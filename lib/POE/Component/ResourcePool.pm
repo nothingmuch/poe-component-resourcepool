@@ -22,12 +22,8 @@ sub spawn { shift->new(@_) }
 has alias => (
 	isa => "Str|Undef",
 	is  => "ro",
-	default => "resource_pool",
-);
-
-has _counted_self => (
-	isa => "Bool",
-	is  => "rw",
+	lazy    => 1,
+	default => sub { overload::StrVal(shift) },
 );
 
 has resources => (
@@ -186,21 +182,12 @@ event _shutdown => sub {
 	my ( $self, $kernel ) = @_[OBJECT, KERNEL];
 
 	$kernel->alias_remove( $_ ) for $kernel->alias_list();
-
-	if ( $self->_counted_self ) {
-		$poe_kernel->refcount_decrement( $self->get_session_id, __PACKAGE__ );
-	}
 };
 
 sub START {
 	my $self = shift;
 
-	if ( defined ( my $alias = $self->alias ) ) {
-		$poe_kernel->alias_set($alias);
-	} else {
-		$poe_kernel->refcount_increment( $self->get_session_id, __PACKAGE__ );
-		$self->_counted_self(1);
-	}
+	$poe_kernel->alias_set($self->alias);
 }
 
 # keyed by request
@@ -587,11 +574,7 @@ Deallocates the request if it has been fulfilled, or cancels it otherwise.
 
 =item shutdown
 
-Remove all L<POE> aliases and reference counts to the pool, allowing it's
-session to close.
-
-Currently it's required that you call C<shutdown> explicitly unless you set an
-alias for the session.
+Remove the alias for the pool, causing its session to close.
 
 =item resource_updated $resource, [ @requests ]
 
@@ -640,10 +623,10 @@ method API.
 
 An alias for the poe session.
 
-Defaults to C<resource_pool>.
+Defaults to the C<overload::StrVal> of the pool.
 
-This is present mostly due to POE's session garbage collection behavior, not
-because the pool exports a functional event interface.
+Note that the alias is not currently useful for anything, since the only events
+the resource pool currently responds to are internal.
 
 =item request_class
 
