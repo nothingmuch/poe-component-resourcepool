@@ -395,7 +395,7 @@ sub _try_allocating {
 
 	my $blocked = $self->_blocked_resources_for_request($request);
 
-	return if $blocked->size; # can't allocate if there are blocking resources
+	return unless $blocked->is_null; # can't allocate if there are blocking resources
 
 	my $resources = $self->resources;
 
@@ -419,7 +419,7 @@ sub _try_allocating {
 	}
 
 	# if no allocations failed then the blocked set is still empty
-	return if $blocked->size;
+	return unless $blocked->is_null;
 
 	$poe_kernel->refcount_increment( $request->session_id, __PACKAGE__ . "::finalizing_allocation" );
 
