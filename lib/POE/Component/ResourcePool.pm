@@ -311,12 +311,10 @@ sub _unblock_resource {
 	foreach my $request ( @requests ) {
 		my ( $ready, $blocked ) = $self->_resource_sets_for_request($request);
 
-		my $was_blocked = $blocked->includes($resource);
-
-		$blocked->remove($resource);
-		$ready->insert($resource);
-
-		push @ret, $request if $was_blocked and $blocked->size == 0;
+		if ( $blocked->remove($resource) ) {
+			$ready->insert($resource);
+			push @ret, $request if $blocked->is_null;
+		}
 	}
 
 	return @ret;
