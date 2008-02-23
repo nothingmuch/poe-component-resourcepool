@@ -13,6 +13,7 @@ WriteMakefile(
 	PREREQ_PM    => {
 		'Test::use::ok' => 0,
 		'POE' => 0,
+		'Carp::Clan' => 0,
 		'Moose' => '0.37', # undef init_arg, initializer
 		'MooseX::POE' => '0.07', # session leaks, aliased role
 		'Set::Object' => '1.20', # weak sets
