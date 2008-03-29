@@ -58,7 +58,7 @@ sub DEMOLISH {
 
 	# the extra checks are because in global destruction these values are
 	# sometimes already gone
-	foreach my $resource ( grep { defined }values %{ $self->resources || return } ) {
+	foreach my $resource ( grep { defined } values %{ $self->resources || return } ) {
 		$resource->unregister_pool($self);
 	}
 }
