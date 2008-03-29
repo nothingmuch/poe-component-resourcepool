@@ -10,7 +10,7 @@ use Tie::RefHash::Weak;
 
 #use MooseX::Types::Set::Object;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 # nested pools?
 # with qw(POE::Component::ResourcePool::Resource);
