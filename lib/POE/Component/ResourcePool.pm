@@ -129,7 +129,7 @@ sub resource_updated {
 
 	my @ready = $self->_unblock_resource( $resource, @requests );
 
-	$self->yield( requests_ready => @ready );
+	$self->call( requests_ready => @ready );
 }
 
 sub pending_requests {
