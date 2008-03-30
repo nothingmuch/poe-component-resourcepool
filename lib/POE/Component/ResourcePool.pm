@@ -15,6 +15,8 @@ our $VERSION = "0.02";
 # nested pools?
 # with qw(POE::Component::ResourcePool::Resource);
 
+use POE::Component::ResourcePool::Resource; # load type constraint
+
 use POE::Component::ResourcePool::Request;
 
 with qw(MooseX::POE::Aliased);
