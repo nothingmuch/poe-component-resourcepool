@@ -1,3 +1,7 @@
+0.03
+	- Fix a race condition in C<requests_ready>
+	- Load the ::Resource role to make sure its type constraint is set up properly
+
 0.02
 	- Add Carp::Clan as a dep in the Makefile.PL
 
