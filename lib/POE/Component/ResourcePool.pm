@@ -50,6 +50,8 @@ has refcount_allocated => (
 sub BUILD {
 	my $self = shift;
 
+	$self->MooseX::POE::Aliased::BUILD(@_);
+
 	foreach my $resource ( values %{ $self->resources } ) {
 		$resource->register_pool($self);
 	}
