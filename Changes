@@ -1,3 +1,6 @@
+0.04
+	- Invoke MX::POE::Aliased::BUILD
+
 0.03
 	- Fix a race condition in C<requests_ready>
 	- Load the ::Resource role to make sure its type constraint is set up properly
