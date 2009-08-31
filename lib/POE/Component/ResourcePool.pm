@@ -405,7 +405,7 @@ sub _try_allocating {
 		$output_params{$resource_name} = $resource->finalize_allocation( $self, $request, @{ $allocations{$resource_name} } );
 	}
 
-	$request->results(\%output_params);
+	$request->_results(\%output_params);
 
 	$request->invoke_callback( pool => $self, %output_params );
 
